@@ -1,0 +1,133 @@
+# =============================================================================
+# DRDO AI-ANC — Master Configuration
+# =============================================================================
+
+project:
+  name: "DRDO AI-ANC"
+  version: "0.1.0"
+  description: "AI-Driven Context-Aware Adaptive Noise Cancellation for Mission-Critical Communication"
+
+# ---------------------------------------------------------------------------
+# Paths (relative to project root)
+# ---------------------------------------------------------------------------
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  data_metadata: "data/metadata"
+  models_pretrained: "models/pretrained"
+  models_custom: "models/custom"
+  logs: "logs"
+  outputs: "outputs"
+
+# ---------------------------------------------------------------------------
+# Audio defaults
+# ---------------------------------------------------------------------------
+audio:
+  target_sample_rate: 48000          # DeepFilterNet operates at 48 kHz
+  mono: true
+  normalization:
+    method: "peak"                   # "peak" | "rms" | "none"
+    target_db: -3.0                  # target peak level in dBFS
+  supported_formats:
+    - ".wav"
+    - ".flac"
+    - ".ogg"
+    - ".mp3"
+
+# ---------------------------------------------------------------------------
+# Feature extraction
+# ---------------------------------------------------------------------------
+features:
+  stft:
+    n_fft: 2048
+    hop_length: 512
+    win_length: 2048
+    window: "hann"
+  mel:
+    n_mels: 128
+    fmin: 20.0
+    fmax: 20000.0
+  rms:
+    frame_length: 2048
+    hop_length: 512
+
+# ---------------------------------------------------------------------------
+# Dataset registry
+# ---------------------------------------------------------------------------
+datasets:
+  chime3:
+    name: "CHiME-3"
+    description: >
+      3rd CHiME Speech Separation and Recognition Challenge.
+      Contains real noisy speech recorded in four noisy environments
+      (bus, cafe, pedestrian area, street junction) using a tablet
+      device with six microphones.
+    source_url: "https://www.chimechallenge.org/challenges/chime3"
+    license: "Restricted — academic use; requires registration and signed license agreement."
+    local_path: "data/raw/chime3"
+    expected_sr: 16000
+    notes: >
+      Must be obtained through the official CHiME-3 website.
+      Registration is required. Cannot be redistributed.
+
+  demand:
+    name: "DEMAND (Diverse Environments Multichannel Acoustic Noise Database)"
+    description: >
+      A collection of multichannel noise recordings from 18 different
+      environments across six categories: domestic, nature, office,
+      public, street, transportation.
+    source_url: "https://zenodo.org/record/1227121"
+    license: "CC BY-SA 4.0"
+    local_path: "data/raw/demand"
+    expected_sr: 48000
+    notes: >
+      Freely downloadable from Zenodo. 16-channel recordings.
+
+  sonyc_ust:
+    name: "SONYC-UST (Sounds of New York City — Urban Sound Tagging)"
+    description: >
+      Urban acoustic data collected via a sensor network across New York
+      City. Contains real-world recordings annotated with urban sound
+      event labels (engine, music, human voice, etc.).
+    source_url: "https://zenodo.org/record/3966543"
+    license: "CC BY 4.0"
+    local_path: "data/raw/sonyc_ust"
+    expected_sr: null  # varies
+    notes: >
+      Freely downloadable from Zenodo.
+
+# ---------------------------------------------------------------------------
+# Dataset splitting
+# ---------------------------------------------------------------------------
+splitting:
+  ratios:
+    train: 0.70
+    validation: 0.15
+    test: 0.15
+  strategy: "recording_level"       # split at recording/source level
+  random_seed: 42
+
+# ---------------------------------------------------------------------------
+# Models
+# ---------------------------------------------------------------------------
+models:
+  deepfilternet:
+    name: "DeepFilterNet"
+    repo: "https://github.com/Rikorose/DeepFilterNet"
+    description: "Real-time speech enhancement using deep filtering"
+    sample_rate: 48000
+
+  rnnoise:
+    name: "RNNoise"
+    repo: "https://github.com/xiph/rnnoise"
+    description: "Recurrent neural network for audio noise reduction"
+    sample_rate: 48000
+
+# ---------------------------------------------------------------------------
+# Real-time inference
+# ---------------------------------------------------------------------------
+realtime:
+  block_size: 480                    # samples per block (10 ms at 48 kHz)
+  channels: 1
+  dtype: "float32"
+  device: "cpu"                      # "cpu" | "cuda"
