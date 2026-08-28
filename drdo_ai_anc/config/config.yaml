@@ -44,9 +44,9 @@ features:
     win_length: 2048
     window: "hann"
   mel:
-    n_mels: 128
+    n_mels: 64
     fmin: 20.0
-    fmax: 20000.0
+    fmax: 7600.0
   rms:
     frame_length: 2048
     hop_length: 512
@@ -124,6 +124,26 @@ models:
     sample_rate: 48000
 
 # ---------------------------------------------------------------------------
+# Classifier training
+# ---------------------------------------------------------------------------
+training:
+  sample_rate: 16000                 # classifier input rate (efficient for edge)
+  batch_size: 16
+  learning_rate: 0.001
+  epochs: 30
+  early_stopping_patience: 5
+  clip_duration_s: 4.0
+  random_seed: 42
+  confidence_threshold: 0.5
+
+# Impulse detector thresholds
+impulse_detector:
+  rms_threshold: 0.15
+  crest_factor_threshold: 8.0
+  flux_threshold: 2.0
+  confidence_threshold: 0.5
+
+# ---------------------------------------------------------------------------
 # Real-time inference
 # ---------------------------------------------------------------------------
 realtime:
@@ -131,3 +151,5 @@ realtime:
   channels: 1
   dtype: "float32"
   device: "cpu"                      # "cpu" | "cuda"
+  filter_length: 512
+  confidence_threshold: 0.5

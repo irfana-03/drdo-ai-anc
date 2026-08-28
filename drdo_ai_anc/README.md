@@ -48,14 +48,15 @@
 |--------------------|----------------------------------|------------|
 | Data management    | `src/data/dataset_manager.py`    | ✅ Done    |
 | Audio I/O          | `src/data/audio_loader.py`       | ✅ Done    |
-| Dataset validation | `src/data/dataset_validator.py`  | ✅ Done    |
+| Dataset validation | `scripts/verify_real_dataset.py` | ✅ Done    |
 | Preprocessing      | `src/preprocessing/audio_preprocessing.py` | ✅ Done |
 | Feature extraction | `src/preprocessing/feature_extraction.py`  | ✅ Done |
+| Noise classification | `src/classification/noise_classifier.py` | ✅ Done |
+| Impulse detection  | `src/classification/impulse_detector.py` | ✅ Done |
+| Evaluation metrics | `src/evaluation/classification_metrics.py` | ✅ Done |
 | Speech enhancement | `src/enhancement/`               | 🔜 Planned |
-| Noise classification | `src/classification/`          | 🔜 Planned |
 | Adaptive control   | `src/adaptive/`                  | 🔜 Planned |
 | Real-time engine   | `src/realtime/`                  | 🔜 Planned |
-| Evaluation metrics | `src/evaluation/`                | 🔜 Planned |
 
 ---
 
@@ -98,8 +99,13 @@ drdo_ai_anc/
 │   └── evaluation/                     # (planned) PESQ, STOI, SI-SDR
 ├── scripts/
 │   ├── setup_environment.py            # Dependency checker
-│   ├── download_datasets.py            # Dataset acquisition helper
+│   ├── download_datasets.py            # Download real datasets from Zenodo
+│   ├── verify_real_dataset.py          # Validate audio + build metadata/splits
+│   ├── dataset_report.py               # Print dataset statistics
+│   ├── train_classifier.py             # Train noise context classifier
+│   ├── evaluate_classifier.py          # Evaluate on held-out test set
 │   └── verify_installation.py          # Full project verification
+├── train.py                            # End-to-end pipeline runner
 ├── tests/
 │   ├── __init__.py
 │   └── test_audio_load.py              # Load one real audio file and inspect
@@ -223,6 +229,91 @@ This checks:
 ---
 
 ## Usage
+
+### Full ML Pipeline (recommended)
+
+```bash
+python train.py
+```
+
+Or step-by-step:
+
+```bash
+python scripts/download_datasets.py      # Download DEMAND + SONYC-UST subset
+python scripts/verify_real_dataset.py    # Validate + build metadata/splits
+python scripts/dataset_report.py         # Print dataset statistics
+python scripts/train_classifier.py       # Train CNN classifier
+python scripts/evaluate_classifier.py    # Evaluate on held-out test set
+```
+
+### Datasets Actually Used (First Training Run)
+
+| Dataset   | Recordings | Duration | Source | License |
+|-----------|-----------|----------|--------|---------|
+| DEMAND    | 4 (ch01 per environment) | 0.33 h | Zenodo #1227121 | CC BY-SA 4.0 |
+| SONYC-UST | 506 | 1.41 h | Zenodo #3966543 (`audio-18.tar.gz`) | CC BY 4.0 |
+| CHiME-3   | 0 (manual download required) | — | chimechallenge.org | Academic |
+
+**Total: 510 real recordings, ~1.74 hours of audio. No synthetic data.**
+
+DEMAND subset: `NRIVER_16k`, `TBUS_16k`, `OOFFICE_16k`, `STRAFFIC_16k` (channel 1 only).
+
+### Label Mapping
+
+Transparent mappings are in `data/metadata/label_mapping.csv` and `src/data/label_mapping.py`.
+
+| Original Label | Mapped Context | Dataset |
+|----------------|----------------|---------|
+| NRIVER, OOFFICE | STATIONARY | DEMAND |
+| TBUS, STRAFFIC | DYNAMIC | DEMAND |
+| engine, powered-saw | DYNAMIC | SONYC-UST |
+| machinery-impact, non-machinery-impact, alert-signal | IMPULSIVE | SONYC-UST |
+| human-voice | SPEECH | SONYC-UST |
+| music, dog | OTHER | SONYC-UST |
+
+### Train/Validation/Test Split
+
+- **Strategy:** Recording-level (no segment leakage)
+- **SONYC-UST:** Uses original dataset splits (sensor-disjoint train/val, time-disjoint test)
+- **DEMAND:** Hash-based split across environments
+- **Ratios:** 70% / 15% / 15% (configurable in `config/config.yaml`)
+- **Actual split:** 358 train / 129 validation / 23 test
+
+### Feature Extraction
+
+Log-mel spectrogram (64 mels, n_fft=2048, hop=512) at 16 kHz, plus RMS, spectral centroid, spectral flux, and zero-crossing rate. Parameters in `config/config.yaml`.
+
+### Model Architecture
+
+Compact CNN (`NoiseContextCNN`) on log-mel input:
+- 3 conv blocks (16→32→64 channels) with BatchNorm + MaxPool
+- AdaptiveAvgPool → FC(128) → Dropout(0.3) → FC(5 classes)
+- Suitable for edge deployment (~50K parameters)
+
+### Trained Model Location
+
+```
+models/custom/noise_context_classifier.pt
+models/custom/class_mapping.json
+models/custom/training_config.json
+```
+
+### Evaluation Results (Held-Out Test Set)
+
+Results saved to `results/metrics/metrics.json` and `results/figures/confusion_matrix.png`.
+
+| Metric | Value |
+|--------|-------|
+| Test accuracy | 0.435 |
+| Macro F1 | 0.236 |
+
+### Limitations
+
+1. **CHiME-3 not included** — requires manual registration; add to `data/raw/chime3/` for speech evaluation data.
+2. **Small first-run subset** — 4 DEMAND environments + 1 SONYC archive (~700 MB compressed).
+3. **Imbalanced classes** — OTHER and DYNAMIC dominate; class weighting applied but performance varies.
+4. **Small test set** — 23 recordings (SONYC original test split intersecting downloaded archive).
+5. **No synthetic data** — all training uses verified real recordings only.
 
 ### Dataset Manager CLI
 

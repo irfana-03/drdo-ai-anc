@@ -1,0 +1,24 @@
+{
+  "status": "ok",
+  "total_files": 510,
+  "corrupt_files": 0,
+  "duplicate_files": 4,
+  "train": 358,
+  "validation": 129,
+  "test": 23,
+  "total_duration_s": 6260.016,
+  "classes": {
+    "STATIONARY": 2,
+    "DYNAMIC": 105,
+    "IMPULSIVE": 89,
+    "SPEECH": 151,
+    "OTHER": 163
+  },
+  "corrupt_list": [],
+  "duplicate_list": [
+    "C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\10_006368.wav duplicates C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\10_002640.wav",
+    "C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\37_008075.wav duplicates C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\37_005425.wav",
+    "C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\38_008955.wav duplicates C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\38_007079.wav",
+    "C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\40_003611.wav duplicates C:\\Users\\Hp\\Desktop\\ANC\\drdo_ai_anc\\data\\raw\\sonyc_ust\\audio-18\\40_001990.wav"
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "dataset": "chime3",
+    "name": "CHiME-3",
+    "license": "Academic \u2014 registration required",
+    "source_url": "https://www.chimechallenge.org/challenges/chime3",
+    "status": "manual_required",
+    "files_downloaded": 0,
+    "audio_files": 0
+  },
+  {
+    "dataset": "demand",
+    "name": "DEMAND",
+    "license": "CC BY-SA 4.0",
+    "source_url": "https://zenodo.org/record/1227121",
+    "status": "downloaded",
+    "files_downloaded": 4,
+    "audio_files": 64
+  },
+  {
+    "dataset": "sonyc_ust",
+    "name": "SONYC-UST",
+    "license": "CC BY 4.0",
+    "source_url": "https://zenodo.org/record/3966543",
+    "status": "downloaded",
+    "files_downloaded": 2,
+    "audio_files": 510
+  }
+]

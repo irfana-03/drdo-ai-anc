@@ -1,0 +1,32 @@
+dataset,original_label,mapped_context,reason
+demand,NFIELD,STATIONARY,Open field — steady ambient wind/grass noise (nature category).
+demand,NRIVER,STATIONARY,River — continuous flowing-water ambient noise (nature category).
+demand,NPARK,STATIONARY,Park — relatively steady outdoor ambient noise (nature category).
+demand,OOFFICE,STATIONARY,Office — low-variation HVAC/room tone (office category).
+demand,OHALLWAY,STATIONARY,Hallway — steady building ambient noise (office category).
+demand,OMEETING,DYNAMIC,Meeting room — intermittent speech/activity over room tone (office).
+demand,DKITCHEN,DYNAMIC,Kitchen — appliances and intermittent domestic activity (domestic).
+demand,DLIVING,DYNAMIC,"Living room — TV, movement, intermittent domestic sounds (domestic)."
+demand,DWASHING,DYNAMIC,Washing machine — periodic mechanical cycling (domestic).
+demand,PCAFETER,DYNAMIC,Cafeteria — crowd chatter and intermittent activity (public).
+demand,PRESTO,DYNAMIC,Restaurant — variable crowd and service activity (public).
+demand,SCAFE,DYNAMIC,Street cafe — traffic and pedestrian variability (public).
+demand,PSTATION,DYNAMIC,"Public station — announcements, crowds, trains (public)."
+demand,SPSQUARE,DYNAMIC,Public square — variable pedestrian and urban activity (street).
+demand,STRAFFIC,DYNAMIC,"Street traffic — moving vehicles, non-stationary road noise (street)."
+demand,TBUS,DYNAMIC,Bus interior — engine vibration and route-dependent changes (transport).
+demand,TCAR,DYNAMIC,Car interior — engine/road noise varying with speed (transport).
+demand,TMETRO,DYNAMIC,"Metro — rail rumble, stops, and cabin dynamics (transport)."
+sonyc_ust,engine,DYNAMIC,Vehicle/engine sounds — time-varying mechanical noise.
+sonyc_ust,machinery-impact,IMPULSIVE,Construction impact machinery — transient impulsive events.
+sonyc_ust,non-machinery-impact,IMPULSIVE,Non-machinery impacts — short transient acoustic events.
+sonyc_ust,powered-saw,DYNAMIC,Powered saws — sustained but modulated mechanical noise.
+sonyc_ust,alert-signal,IMPULSIVE,"Horns, sirens, alarms — short alert transients."
+sonyc_ust,music,OTHER,Music — does not fit stationary/dynamic/impulsive/speech taxonomy.
+sonyc_ust,human-voice,SPEECH,Human voice — speech-related acoustic context.
+sonyc_ust,dog,OTHER,"Dog barking — biological non-speech event, mapped to OTHER."
+chime3,noisy_speech,SPEECH,CHiME-3 contains real noisy speech in cafeteria/bus/street environments.
+chime3,BUS,SPEECH,CHiME-3 bus environment — primary content is speech.
+chime3,CAF,SPEECH,CHiME-3 cafe environment — primary content is speech.
+chime3,PED,SPEECH,CHiME-3 pedestrian area — primary content is speech.
+chime3,STR,SPEECH,CHiME-3 street junction — primary content is speech.

@@ -24,6 +24,13 @@ PyYAML>=6.0
 
 # Visualization
 matplotlib>=3.7.0
+plotly>=5.18.0
+
+# Dashboard
+streamlit>=1.28.0
+
+# System monitoring
+psutil>=5.9.0
 
 # Data management
 pandas>=2.0.0
