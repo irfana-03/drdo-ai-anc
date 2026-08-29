@@ -236,7 +236,21 @@ This checks:
 python train.py
 ```
 
-Or step-by-step:
+### Presentation Demo (fastest)
+
+```bash
+run_demo.bat
+```
+
+Or manually:
+
+```bash
+streamlit run app/dashboard.py
+```
+
+**Offline demo:** On the Live Monitor page, upload a WAV file or use the built-in sample, then click **PROCESS OFFLINE FILE**.
+
+**SIH Demo Mode:** Click **LAUNCH SIH DEMO MODE** in the sidebar for a clean presentation view.
 
 ```bash
 python scripts/download_datasets.py      # Download DEMAND + SONYC-UST subset
